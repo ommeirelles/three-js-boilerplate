@@ -1,18 +1,15 @@
 {
-  "name": "three-js-boilerplate",
-  "version": "1.0.0",
-  "description": "",
-  "main": "scripts.js",
+  "repository": "#",
+  "license": "UNLICENSED",
   "scripts": {
-    "start": "node index.js"
+    "dev": "./node_modules/.bin/parcel ./src/index.html"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github-learnthreejs:learnthreejs/three-js-boilerplate.git"
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.1",
+    "parcel": "^2.0.1",
+    "prettier": "2.5.1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^4.15.3"
+    "three": "^0.135.0"
   }
 }
