@@ -1,63 +1,61 @@
 import * as  THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { Camera } from './camera'
+import { Renderer } from './renderer'
 
-const screenSize = {
-	width: window.innerWidth,
-	height: window.innerHeight
+const clock = new THREE.Clock()
+const config = {
+	screenSize: {
+		width: window.innerWidth,
+		height: window.innerHeight
+	},
+	maxPixelRatio: 2,
+	scene: new THREE.Scene(),
+	camera: undefined,
+	renderer: undefined
 }
 
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(
-	75,
-	screenSize.width / screenSize.height,
-	0.1,
-	1000
+config.camera = new Camera(config)
+config.renderer = Renderer(config)
+
+
+const cube = new THREE.Mesh(
+	new THREE.BoxGeometry(1, 1, 1),
+	new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 )
-camera.position.z = 5
-
-const renderer = new THREE.WebGLRenderer()
-renderer.setSize(screenSize.width, screenSize.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-const geometry = new THREE.BoxGeometry(1, 1, 1)
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-material.wireframe = true
-const cube = new THREE.Mesh(geometry, material)
+cube.material.wireframe = true;
 scene.add(cube)
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true
 
-const clock = new THREE.Clock();
-
+let windowResized = false;
 window.addEventListener('resize', () => {
-	// Update sizes
-	screenSize.width = window.innerWidth
-	screenSize.height = window.innerHeight
-
-	// Update camera
-	camera.aspect = screenSize.width / screenSize.height
-	camera.updateProjectionMatrix()
-
-	// Update renderer
-	renderer.setSize(screenSize.width, screenSize.height)
-	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+	config.screenSize.width = window.innerWidth
+	config.screenSize.height = window.innerHeight
+	windowResized = true;
 })
 
-const animate = function () {
-	requestAnimationFrame(animate)
+let delta = 0;
+const loop = function () {
+	delta = clock.getDelta();
 
-	const delta = clock.getDelta()
+	requestAnimationFrame(loop)
 	controls.update();
+	config.renderer.update();
+
+	if (windowResized) {
+		config.camera.resized();
+		config.renderer.resized();
+	}
+	windowResized = false;
+
 
 	((d) => {
 		cube.rotation.x += 1 * d
 		cube.rotation.y += 1 * d
 		cube.rotation.z += 1 * d
 	})(delta)
-
-
-	renderer.render(scene, camera)
 }
 
 document.body.appendChild(renderer.domElement)
