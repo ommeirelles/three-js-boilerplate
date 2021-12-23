@@ -1,3 +1,5 @@
+import * as  THREE from 'three'
+
 export class Camera {
     config;
     camera;
@@ -10,17 +12,13 @@ export class Camera {
             0.1,
             1000
         )
-        camera.position.z = 5
-
-    }
-
-    update(delta) {
+        this.camera.position.z = 5
 
     }
 
     resized() {
-        // Update renderer
-        renderer.setSize(config.screenSize.width, config.screenSize.height)
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        // Update camera
+        this.camera.aspect = config.screenSize.width / config.screenSize.height
+        this.camera.updateProjectionMatrix()
     }
 }

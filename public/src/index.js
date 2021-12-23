@@ -16,17 +16,16 @@ const config = {
 }
 
 config.camera = new Camera(config)
-config.renderer = Renderer(config)
-
+config.renderer = new Renderer(config)
 
 const cube = new THREE.Mesh(
 	new THREE.BoxGeometry(1, 1, 1),
 	new THREE.MeshBasicMaterial({ color: 0x00ff00 })
 )
 cube.material.wireframe = true;
-scene.add(cube)
+config.scene.add(cube)
 
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(config.camera.camera, config.renderer.renderer.domElement);
 controls.enableDamping = true
 
 let windowResized = false;
@@ -58,5 +57,5 @@ const loop = function () {
 	})(delta)
 }
 
-document.body.appendChild(renderer.domElement)
-animate()
+document.body.appendChild(config.renderer.renderer.domElement)
+loop()
