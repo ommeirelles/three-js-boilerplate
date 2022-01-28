@@ -2,7 +2,9 @@
     "repository": "#",
     "license": "UNLICENSED",
     "scripts": {
-        "dev": "./node_modules/.bin/parcel ./public/index.html"
+        "dev": "./node_modules/.bin/parcel ./public/index.html",
+        "predeploy": "rm -rf dist && parcel build ./public/index.html --public-url \"https://github.com/ommeirelles/three-js-boilerplate\"",
+        "deploy": "gh-pages -d ./dist"
     },
     "devDependencies": {
         "@parcel/resolver-glob": "^2.2.0",
@@ -14,6 +16,7 @@
         "prettier": "2.5.1"
     },
     "dependencies": {
+        "gh-pages": "^3.2.3",
         "lil-gui": "^0.16.0",
         "three": "^0.135.0"
     },
