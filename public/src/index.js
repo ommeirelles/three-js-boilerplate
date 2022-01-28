@@ -1,11 +1,19 @@
 import * as THREE from 'three'
+import { Color } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import GUI from 'lil-gui'
+
 import { Camera } from './camera'
-import { Helmet } from './helmet'
 import { Renderer } from './renderer'
+import planet from './planet'
+import stars from './stars'
+
+/**--- CONFIG ----*/
+// const gui = new GUI()
 
 const clock = new THREE.Clock()
 const config = {
+    verbose: false,
     screenSize: {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -14,14 +22,20 @@ const config = {
     scene: new THREE.Scene(),
     camera: undefined,
     renderer: undefined,
+    antialias: true,
 }
 
 config.camera = new Camera(config)
 config.renderer = new Renderer(config)
+const { renderer: customRender, scene } = config
+customRender.configure((renderer) => {
+    renderer.toneMapping = THREE.ReinhardToneMapping
+    renderer.toneMappingExposure = 1
+})
 
 const controls = new OrbitControls(
     config.camera.camera,
-    config.renderer.renderer.domElement
+    customRender.renderer.domElement
 )
 controls.enableDamping = true
 
@@ -32,24 +46,30 @@ window.addEventListener('resize', () => {
     windowResized = true
 })
 
-new Helmet(config.scene)
-const light = new THREE.AmbientLight(0x404040) // soft white light
-config.scene.add(light)
+/**--- OBJECT ----*/
+const animatePlanet = planet(config)
+const animateStars = stars(config)
 
-let delta = 0
-const loop = function () {
-    delta = clock.getDelta()
+/**--- MAIN ----*/
+;(function main() {
+    let delta = 0
+    const loop = function () {
+        delta = clock.getDelta()
 
-    requestAnimationFrame(loop)
-    controls.update()
-    config.renderer.update()
+        animatePlanet(delta)
+        animateStars(delta)
 
-    if (windowResized) {
-        config.camera.resized()
-        config.renderer.resized()
+        requestAnimationFrame(loop)
+        controls.update()
+        customRender.update()
+
+        if (windowResized) {
+            config.camera.resized()
+            customRender.resized()
+        }
+        windowResized = false
     }
-    windowResized = false
-}
 
-document.body.appendChild(config.renderer.renderer.domElement)
-loop()
+    document.body.appendChild(customRender.renderer.domElement)
+    loop()
+})()
