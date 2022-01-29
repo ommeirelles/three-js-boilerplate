@@ -3,7 +3,7 @@
     "license": "UNLICENSED",
     "scripts": {
         "dev": "./node_modules/.bin/parcel ./public/index.html",
-        "predeploy": "rm -rf dist && parcel build ./public/index.html --public-url \"https://github.com/ommeirelles/three-js-boilerplate\"",
+        "predeploy": "rm -rf dist && parcel build ./public/index.html --public-url \"https://ommeirelles.github.io/three-js-boilerplate/\"",
         "deploy": "gh-pages -d ./dist"
     },
     "devDependencies": {

@@ -36,7 +36,7 @@ export default ({ scene, screenSize }) => {
     const mesh = new THREE.Points(geometry, material)
     scene.add(mesh)
 
-    speed = 0.01
+    const speed = 0.01
     return (delta) => {
         mesh.rotation.y += speed * delta
     }
